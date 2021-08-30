@@ -4,7 +4,7 @@ const tripsController = require('../controllers/trip.controller');
 
 const { isCountryExist, isTripByIdExist, isRequestDataComplete } = require('../middlewares/trip.middlewares');
 
-router.post('/', isCountryExist, isRequestDataComplete, tripsController.createTrip);
+router.post('/', isRequestDataComplete, isCountryExist, tripsController.createTrip);
 
 router.get('/', tripsController.getAllTrips);
 

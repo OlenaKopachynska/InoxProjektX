@@ -5,7 +5,7 @@ const {
   isUserByIdExist, isEmailExist, isRequestDataComplete, isEmailCorrect
 } = require('../middlewares/user.middleware');
 
-router.post('/', isEmailExist, isEmailCorrect, isRequestDataComplete, usersController.createUser);
+router.post('/', isEmailCorrect, isRequestDataComplete, isEmailExist, usersController.createUser);
 
 router.get('/', usersController.getAllUsers);
 
