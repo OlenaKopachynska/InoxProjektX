@@ -1,22 +1,30 @@
 const { User } = require('../dataBase');
 const { CREATED } = require('../configs/statusCode.enum');
+const userUtil = require('../utils/user_util');
+const passwordService = require('../services/password_service');
 
 module.exports = {
 
   createUser: async (req, res, next) => {
     try {
-      const { email, name, password } = req.body;
+      const { password, email } = req.body;
 
-      await User.create({ email, password, name });
+      const hashPassword = await passwordService.hash(password);
 
-      res.status(CREATED).json('created');
+      await User.create({ ...req.body, password: hashPassword });
+
+      const createdUser = await User.findOne({ email });
+
+      res.status(CREATED).json(createdUser);
     } catch (e) {
       next(e);
     }
   },
+
   getAllUsers: async (req, res, next) => {
     try {
-      const allUsers = await User.find({});
+      const allUsers = await User.find({}).select('-password -__v');
+
       res.json(allUsers);
     } catch (e) {
       next(e);
@@ -25,9 +33,9 @@ module.exports = {
 
   getUserById: (req, res, next) => {
     try {
-      const { user } = req;
+      const normalizedUser = userUtil.userNormalizator(req.user);
 
-      res.json(user);
+      res.json(normalizedUser);
     } catch (e) {
       next(e);
     }
@@ -43,19 +51,6 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  },
+  }
 
-  // updateUser: async (req, res, next) => {
-  //     try {
-  //         const {user_id} = req.params;
-  //         const {...user_id} = req.body;
-  //
-  //         await User.findByIdAndUpdate(userId, userData);
-  //
-  //         res
-  //             .json({message: 'Updated'});
-  //     } catch (e) {
-  //         next(e);
-  //     }
-  // }
 };

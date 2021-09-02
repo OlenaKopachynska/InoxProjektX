@@ -43,19 +43,5 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  },
-
-  // updateUser: async (req, res, next) => {
-  //     try {
-  //         const {user_id} = req.params;
-  //         const {...user_id} = req.body;
-  //
-  //         await User.findByIdAndUpdate(userId, userData);
-  //
-  //         res
-  //             .json({message: 'Updated'});
-  //     } catch (e) {
-  //         next(e);
-  //     }
-  // }
+  }
 };

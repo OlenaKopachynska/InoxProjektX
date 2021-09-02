@@ -18,11 +18,11 @@ const userSchema = new Schema({
     type: String,
     trim: true,
     required: true,
+    select: false
   },
   role: {
     type: String,
-    default: userRolesEnum.USER,
-    enum: Object.values(userRolesEnum)
+    default: userRolesEnum.USER
   }
 }, { timestamps: true });
 

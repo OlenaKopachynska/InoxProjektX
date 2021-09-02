@@ -1,17 +1,22 @@
 const { Trip } = require('../dataBase');
 const ErrorHandler = require('../errors/ErrorHandler');
-const { BAD_REQUEST } = require('../configs/statusCode.enum');
+const { BAD_REQUEST, NOT_FOUND } = require('../configs/statusCode.enum');
+const { tripValidator } = require('../validators/index');
 
 module.exports = {
 
   isCountryExist: async (req, res, next) => {
     try {
-      const { country } = req.body;
+      const { error, value } = tripValidator.createTripValidator.validate(req.body);
 
-      const trip = await Trip.findOne({ country: country.trim() });
+      if (error) {
+        throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+      }
+
+      const trip = await Trip.findOne({ country: value.country.trim() });
 
       if (trip) {
-        throw new ErrorHandler(400, 'Trip does already exist');
+        throw new ErrorHandler(BAD_REQUEST, 'Trip does already exist');
       }
 
       next();
@@ -27,7 +32,7 @@ module.exports = {
       const trip = await Trip.findById(trip_id);
 
       if (!trip) {
-        throw new ErrorHandler(404, 'Trip is not found');
+        throw new ErrorHandler(NOT_FOUND, 'Trip is not found');
       }
 
       req.trip = trip;
@@ -39,11 +44,11 @@ module.exports = {
   },
   isRequestDataComplete: (req, res, next) => {
     try {
-      const { country } = req.body;
-
-      if (!country) {
-        throw new ErrorHandler(BAD_REQUEST, 'Bad request');
+      const { error, value } = tripValidator.createTripValidator.validate(req.body);
+      if (error) {
+        throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
       }
+      req.body = value;
 
       next();
     } catch (e) {

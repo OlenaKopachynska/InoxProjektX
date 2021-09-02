@@ -1,15 +1,19 @@
 const { User } = require('../dataBase');
 const ErrorHandler = require('../errors/ErrorHandler');
-const { BAD_REQUEST } = require('../configs/statusCode.enum');
-const { validateEmail } = require('../helpers/emailValidationHelper');
+const { BAD_REQUEST, NOT_FOUND } = require('../configs/statusCode.enum');
+const { userValidator } = require('../validators/index');
 
 module.exports = {
 
   isEmailExist: async (req, res, next) => {
     try {
-      const { email } = req.body;
+      const { error, value } = userValidator.createUserValidator.validate(req.body);
 
-      const userByEmail = await User.findOne({ email: email.trim() });
+      if (error) {
+        throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+      }
+
+      const userByEmail = await User.findOne({ email: value.email });
 
       if (userByEmail) {
         throw new ErrorHandler(400, 'Email does already exist');
@@ -25,10 +29,10 @@ module.exports = {
     try {
       const { user_id } = req.params;
 
-      const user = await User.findById(user_id);
+      const user = await User.findById(user_id).lean();
 
       if (!user) {
-        throw new ErrorHandler(404, 'User not found');
+        throw new ErrorHandler(NOT_FOUND, 'User not found');
       }
 
       req.user = user;
@@ -38,28 +42,16 @@ module.exports = {
       next(err);
     }
   },
-  isRequestDataComplete: (req, res, next) => {
-    try {
-      const { email, name, password } = req.body;
 
-      if (!email || !name || !password) {
-        throw new ErrorHandler(BAD_REQUEST, 'Bad request');
+  isRequestDataCorrect: (req, res, next) => {
+    try {
+      const { error, value } = userValidator.createUserValidator.validate(req.body);
+
+      if (error) {
+        throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
       }
 
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
-  isEmailCorrect: (req, res, next) => {
-    try {
-      const { email } = req.body;
-
-      const validatedEmail = validateEmail(email);
-
-      if (!validatedEmail) {
-        throw new ErrorHandler('Invalid format of email', BAD_REQUEST);
-      }
+      req.body = value;
 
       next();
     } catch (e) {
