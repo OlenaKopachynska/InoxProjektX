@@ -5,7 +5,7 @@ const { userValidator } = require('../validators/index');
 
 module.exports = {
 
-  isEmailExist: async (req, res, next) => {
+  isRequestDataCorrect: (req, res, next) => {
     try {
       const { error, value } = userValidator.createUserValidator.validate(req.body);
 
@@ -13,7 +13,29 @@ module.exports = {
         throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
       }
 
-      const userByEmail = await User.findOne({ email: value.email });
+      req.body = value;
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+  getUserByDynamicParam: (paramName, searchIn = 'body', dbField = paramName) => async (req, res, next) => {
+    try {
+      const value = req[searchIn][paramName];
+      const user = await User.findOne({ [dbField]: value });
+
+      req.user = user;
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  isEmailExist: (req, res, next) => {
+    try {
+      const userByEmail = req.user;
 
       if (userByEmail) {
         throw new ErrorHandler(400, 'Email does already exist');
@@ -43,19 +65,22 @@ module.exports = {
     }
   },
 
-  isRequestDataCorrect: (req, res, next) => {
-    try {
-      const { error, value } = userValidator.createUserValidator.validate(req.body);
+  // checkUserRole: (roleArr = []) => (req, res, next) => {
+  //   try {
+  //     const { role } = req.user;
+  //
+  //     if (!roleArr.length) {
+  //       return next();
+  //     }
+  //
+  //     if (!roleArr.includes(role)) {
+  //       throw new ErrorHandler(FORBIDDEN, 'Forbidden');
+  //     }
+  //
+  //     next();
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // },
 
-      if (error) {
-        throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
-      }
-
-      req.body = value;
-
-      next();
-    } catch (e) {
-      next(e);
-    }
-  },
 };

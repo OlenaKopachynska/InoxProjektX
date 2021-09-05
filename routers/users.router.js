@@ -2,10 +2,10 @@ const router = require('express').Router();
 const usersController = require('../controllers/users.controller');
 
 const {
-  isUserByIdExist, isEmailExist, isRequestDataCorrect,
+  isUserByIdExist, isEmailExist, isRequestDataCorrect, getUserByDynamicParam
 } = require('../middlewares/user.middleware');
 
-router.post('/', isRequestDataCorrect, isEmailExist, usersController.createUser);
+router.post('/', isRequestDataCorrect, getUserByDynamicParam('email'), isEmailExist, usersController.createUser);
 
 router.get('/', usersController.getAllUsers);
 

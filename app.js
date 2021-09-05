@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 
 const path = require('path');
 
-const { PORT } = require('./configs/config');
+const { PORT, DB_URL } = require('./configs/config');
 
-mongoose.connect('mongodb://localhost:27017');
+mongoose.connect(DB_URL);
 
 const staticPath = path.join(__dirname, 'static');
 
