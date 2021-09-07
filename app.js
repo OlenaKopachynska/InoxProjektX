@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const path = require('path');
 
-const { PORT, DB_URL } = require('./configs/config');
+const { PORT, DB_URL } = require('./configs/configs');
 
 mongoose.connect(DB_URL);
 
@@ -20,10 +20,12 @@ app.set('view engine', '.hbs');
 app.engine('.hbs', expressHbs({ defaultLayout: false }));
 app.set('views', staticPath);
 
-const { usersRouter, tripsRouter } = require('./routers');
+const { usersRouter, tripsRouter, authRouter } = require('./routers');
 
 app.use('/users', usersRouter);
 app.use('/trips', tripsRouter);
+
+app.use('/auth', authRouter);
 
 app.use(_mainErrorHandler);
 

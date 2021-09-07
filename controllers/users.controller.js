@@ -1,21 +1,19 @@
-const { User } = require('../dataBase');
-const { CREATED } = require('../configs/statusCode.enum');
-const userUtil = require('../utils/user_util');
+const { User, OAuth } = require('../dataBase');
+const { statusCodesEnum } = require('../entities');
 const passwordService = require('../services/password_service');
+const userUtil = require('../utils/user_util');
 
 module.exports = {
 
   createUser: async (req, res, next) => {
     try {
-      const { password, email } = req.body;
+      const { password } = req.body;
 
       const hashPassword = await passwordService.hash(password);
 
-      await User.create({ ...req.body, password: hashPassword });
+      const createdUser = await User.create({ ...req.body, password: hashPassword });
 
-      const createdUser = await User.findOne({ email });
-
-      res.status(CREATED).json(createdUser);
+      res.status(statusCodesEnum.CREATED).json(createdUser);
     } catch (e) {
       next(e);
     }
@@ -44,10 +42,13 @@ module.exports = {
   deleteUser: async (req, res, next) => {
     try {
       const { user_id } = req.params;
+      const { currentUser } = req;
 
       await User.findByIdAndDelete(user_id);
 
-      res.json({ message: 'user is deleted' });
+      await OAuth.deleteMany({ user: currentUser });
+
+      res.status(statusCodesEnum.NO_CONTENT).json('Deleted successfully');
     } catch (e) {
       next(e);
     }

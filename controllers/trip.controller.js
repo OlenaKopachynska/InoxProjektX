@@ -1,5 +1,5 @@
 const { Trip } = require('../dataBase');
-const { CREATED } = require('../configs/statusCode.enum');
+const { statusCodesEnum } = require('../entities');
 
 module.exports = {
 
@@ -9,7 +9,7 @@ module.exports = {
 
       await Trip.create({ country, price });
 
-      res.status(CREATED).json('created');
+      res.status(statusCodesEnum.CREATED).json('created');
     } catch (e) {
       next(e);
     }

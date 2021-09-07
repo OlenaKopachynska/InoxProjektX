@@ -1,6 +1,6 @@
 const { User } = require('../dataBase');
+const { statusCodesEnum } = require('../entities');
 const ErrorHandler = require('../errors/ErrorHandler');
-const { BAD_REQUEST, NOT_FOUND } = require('../configs/statusCode.enum');
 const { userValidator } = require('../validators/index');
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
       const { error, value } = userValidator.createUserValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+        throw new ErrorHandler(statusCodesEnum.BAD_REQUEST, error.details[0].message);
       }
 
       req.body = value;
@@ -27,6 +27,7 @@ module.exports = {
 
       req.user = user;
 
+      console.log(user);
       next();
     } catch (e) {
       next(e);
@@ -38,7 +39,7 @@ module.exports = {
       const userByEmail = req.user;
 
       if (userByEmail) {
-        throw new ErrorHandler(400, 'Email does already exist');
+        throw new ErrorHandler(statusCodesEnum.BAD_REQUEST, 'Email does already exist');
       }
 
       next();
@@ -54,7 +55,7 @@ module.exports = {
       const user = await User.findById(user_id).lean();
 
       if (!user) {
-        throw new ErrorHandler(NOT_FOUND, 'User not found');
+        throw new ErrorHandler(statusCodesEnum.NOT_FOUND, 'User not found');
       }
 
       req.user = user;
@@ -74,7 +75,7 @@ module.exports = {
   //     }
   //
   //     if (!roleArr.includes(role)) {
-  //       throw new ErrorHandler(FORBIDDEN, 'Forbidden');
+  //       throw new ErrorHandler(statusCodesEnum.FORBIDDEN, 'Forbidden');
   //     }
   //
   //     next();
