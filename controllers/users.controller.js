@@ -2,6 +2,8 @@ const { User, OAuth } = require('../dataBase');
 const { statusCodesEnum } = require('../entities');
 const passwordService = require('../services/password_service');
 const userUtil = require('../utils/user_util');
+const { emailService } = require('../services');
+const emailActionsEnum = require('../entities/emailActions.enum');
 
 module.exports = {
 
@@ -12,6 +14,8 @@ module.exports = {
       const hashPassword = await passwordService.hash(password);
 
       const createdUser = await User.create({ ...req.body, password: hashPassword });
+
+      await emailService.sendMail('alurchik29@gmail.com', emailActionsEnum.WELCOME);
 
       res.status(statusCodesEnum.CREATED).json(createdUser);
     } catch (e) {
@@ -45,6 +49,8 @@ module.exports = {
       const { currentUser } = req;
 
       await User.findByIdAndDelete(user_id);
+
+      await emailService.sendMail('alurchik29@gmail.com', emailActionsEnum.GOODBYE);
 
       await OAuth.deleteMany({ user: currentUser });
 

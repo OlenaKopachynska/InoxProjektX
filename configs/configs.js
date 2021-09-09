@@ -4,4 +4,8 @@ module.exports = {
 
   ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || 'word',
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'hello',
+
+  EMAIL_SENDER_ADDRESS: process.env.EMAIL_SENDER_ADDRESS || 'test@icloud.com',
+  EMAIL_SENDER_PASS: process.env.EMAIL_SENDER_PASS || 'testtest'
+
 };

@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 
 const path = require('path');
 
-const { PORT, DB_URL } = require('./configs/configs');
+require('dotenv').config();
+
+const { DB_URL, PORT } = require('./configs/configs');
 
 mongoose.connect(DB_URL);
 
