@@ -4,5 +4,5 @@ module.exports = {
   emailActionsEnum: require('./emailActions.enum'),
   statusCodesEnum: require('./statusCode.enum'),
   userRolesEnum: require('./user-roler.enum'),
-  countriesEnum: require('./countries.enum')
+  countriesEnum: require('./countries.enum'),
 };

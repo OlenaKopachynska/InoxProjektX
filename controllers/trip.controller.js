@@ -17,6 +17,7 @@ module.exports = {
   getAllTrips: async (req, res, next) => {
     try {
       const allTrips = await Trip.find({});
+
       res.json(allTrips);
     } catch (e) {
       next(e);

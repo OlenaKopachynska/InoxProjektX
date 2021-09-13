@@ -1,4 +1,6 @@
-const { WELCOME, GOODBYE, FORGOT_PASS } = require('../entities/emailActions.enum');
+const {
+  CREATE_ADMIN, FORGOT_PASS, GOODBYE, WELCOME
+} = require('../entities/emailActions.enum');
 
 module.exports = {
   [WELCOME]: {
@@ -11,6 +13,10 @@ module.exports = {
   },
   [FORGOT_PASS]: {
     templateName: 'forgot_password',
-    subject: 'forgot_password'
+    subject: 'forgot password'
+  },
+  [CREATE_ADMIN]: {
+    templateName: 'create_admin',
+    subject: 'create admin'
   }
 };

@@ -1,5 +1,6 @@
 module.exports = {
-  WELCOME: 'welcome',
+  CREATE_ADMIN: 'create_admin',
+  FORGOT_PASS: 'forgot_pass',
   GOODBYE: 'goodbye',
-  FORGOT_PASS: 'forgot_pass'
+  WELCOME: 'welcome',
 };

@@ -9,6 +9,7 @@ module.exports = {
   checkAccessToken: async (req, res, next) => {
     try {
       const token = req.get(constants.AUTHORIZATION);
+
       if (!token) {
         throw new ErrorHandler(statusCodesEnum.UNA, 'No token');
       }

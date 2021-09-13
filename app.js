@@ -24,11 +24,13 @@ app.set('view engine', '.hbs');
 app.engine('.hbs', expressHbs({ defaultLayout: false }));
 app.set('views', staticPath);
 
-const { usersRouter, tripsRouter, authRouter } = require('./routers');
+const {
+  adminRouter, usersRouter, tripsRouter, authRouter
+} = require('./routers');
 
+app.use('/', adminRouter);
 app.use('/users', usersRouter);
 app.use('/trips', tripsRouter);
-
 app.use('/auth', authRouter);
 
 app.use(_mainErrorHandler);

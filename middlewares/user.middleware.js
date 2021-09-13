@@ -66,22 +66,21 @@ module.exports = {
     }
   },
 
-  // checkUserRole: (roleArr = []) => (req, res, next) => {
-  //   try {
-  //     const { role } = req.user;
-  //
-  //     if (!roleArr.length) {
-  //       return next();
-  //     }
-  //
-  //     if (!roleArr.includes(role)) {
-  //       throw new ErrorHandler(statusCodesEnum.FORBIDDEN, 'Forbidden');
-  //     }
-  //
-  //     next();
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // },
+  checkUserRole: (roleArr = []) => (req, res, next) => {
+    try {
+      const { role } = req.currentUser;
+
+      if (!roleArr.length) {
+        return next();
+      }
+
+      if (!roleArr.includes(role)) {
+        throw new ErrorHandler(statusCodesEnum.FORBIDDEN, 'Forbidden');
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
 
 };

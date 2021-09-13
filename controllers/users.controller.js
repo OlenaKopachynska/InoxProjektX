@@ -1,9 +1,7 @@
 const { User, OAuth } = require('../dataBase');
-const { statusCodesEnum } = require('../entities');
-const passwordService = require('../services/password_service');
+const { emailActionsEnum, statusCodesEnum } = require('../entities');
 const userUtil = require('../utils/user_util');
-const { emailService } = require('../services');
-const emailActionsEnum = require('../entities/emailActions.enum');
+const { emailService, passwordService } = require('../services');
 
 module.exports = {
 
@@ -45,8 +43,7 @@ module.exports = {
 
   deleteUser: async (req, res, next) => {
     try {
-      const { user_id } = req.params;
-      const { currentUser } = req;
+      const { params: { user_id }, currentUser } = req;
 
       await User.findByIdAndDelete(user_id);
 

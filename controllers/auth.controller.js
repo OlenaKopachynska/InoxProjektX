@@ -51,6 +51,7 @@ module.exports = {
   refreshToken: async (req, res, next) => {
     try {
       const token = req.get(constants.AUTHORIZATION);
+
       const { currentUser } = req;
 
       await OAuth.deleteOne({ refresh_token: token });
@@ -70,8 +71,7 @@ module.exports = {
 
   changePassword: async (req, res, next) => {
     try {
-      const { oldPassword, newPassword } = req.body;
-      const { currentUser } = req;
+      const { currentUser, body: { oldPassword, newPassword } } = req;
 
       await passwordService.compare(oldPassword, currentUser.password);
 
@@ -104,6 +104,7 @@ module.exports = {
         emailActionsEnum.FORGOT_PASS,
         { forgotPasswordUrl: `${configs.FRONTEND_URL}/forgot?token=${actionToken}`, user }
       );
+
       res.json('Email was sent');
     } catch (e) {
       next(e);
@@ -112,12 +113,15 @@ module.exports = {
   setNewUserPassword: async (req, res, next) => {
     try {
       const { currentUser, body } = req;
+
       const token = req.get(constants.AUTHORIZATION);
 
       const hashedPassword = await passwordService.hash(body.password);
 
       await User.findByIdAndUpdate(currentUser._id, { password: hashedPassword });
+
       await Action_token.deleteOne({ token });
+
       await OAuth.deleteMany({ user: currentUser._id });
 
       res.json('password changed');

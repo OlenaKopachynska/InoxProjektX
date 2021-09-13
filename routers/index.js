@@ -1,5 +1,7 @@
 module.exports = {
-  usersRouter: require('./users.router'),
+  adminRouter: require('./admin.router'),
+  authRouter: require('./auth.router'),
   tripsRouter: require('./trips.router'),
-  authRouter: require('./auth.router')
+  usersRouter: require('./users.router'),
+
 };

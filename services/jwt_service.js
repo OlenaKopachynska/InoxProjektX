@@ -31,6 +31,9 @@ module.exports = {
       case actionTypesEnum.FORGOT_PASSWORD:
         secretWord = configs.FORGOT_PASS_TOKEN_SECRET;
         break;
+      case actionTypesEnum.CREATE_ADMIN:
+        secretWord = configs.CREATE_ADMIN_TOKEN_SECRET;
+        break;
       default:
         throw new ErrorHandler(statusCodesEnum.SERVER_ERROR, 'Wrong actionType');
     }
@@ -44,6 +47,9 @@ module.exports = {
     switch (actionType) {
       case actionTypesEnum.FORGOT_PASSWORD:
         secretWord = configs.FORGOT_PASS_TOKEN_SECRET;
+        break;
+      case actionTypesEnum.CREATE_ADMIN:
+        secretWord = configs.CREATE_ADMIN_TOKEN_SECRET;
         break;
       default:
         throw new ErrorHandler(500, 'Wrong actionType');

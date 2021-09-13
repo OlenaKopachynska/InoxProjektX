@@ -1,6 +1,6 @@
 module.exports = {
   Action_token: require('./ActionToken'),
-  User: require('./User'),
+  OAuth: require('./OAuth'),
   Trip: require('./Trip'),
-  OAuth: require('./OAuth')
+  User: require('./User'),
 };
