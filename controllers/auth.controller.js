@@ -1,7 +1,7 @@
-const { OAuth, User } = require('../dataBase');
-const { constants } = require('../configs');
-const { statusCodesEnum } = require('../entities');
-const { passwordService, jwtService } = require('../services');
+const { OAuth, User, Action_token } = require('../dataBase');
+const { constants, configs } = require('../configs');
+const { statusCodesEnum, actionTypesEnum, emailActionsEnum } = require('../entities');
+const { passwordService, jwtService, emailService } = require('../services');
 const { userUtil } = require('../utils');
 
 module.exports = {
@@ -67,6 +67,7 @@ module.exports = {
       next(e);
     }
   },
+
   changePassword: async (req, res, next) => {
     try {
       const { oldPassword, newPassword } = req.body;
@@ -89,4 +90,40 @@ module.exports = {
       next(e);
     }
   },
+
+  sendResetPasswordEmail: async (req, res, next) => {
+    try {
+      const { user } = req;
+
+      const actionToken = jwtService.generateActionToken(actionTypesEnum.FORGOT_PASSWORD);
+
+      await Action_token.create({ action_token: actionToken, user: user._id });
+
+      await emailService.sendMail(
+        'alurchik29@gmail.com',
+        emailActionsEnum.FORGOT_PASS,
+        { forgotPasswordUrl: `${configs.FRONTEND_URL}/forgot?token=${actionToken}`, user }
+      );
+      res.json('Email was sent');
+    } catch (e) {
+      next(e);
+    }
+  },
+  setNewUserPassword: async (req, res, next) => {
+    try {
+      const { currentUser, body } = req;
+      const token = req.get(constants.AUTHORIZATION);
+
+      const hashedPassword = await passwordService.hash(body.password);
+
+      await User.findByIdAndUpdate(currentUser._id, { password: hashedPassword });
+      await Action_token.deleteOne({ token });
+      await OAuth.deleteMany({ user: currentUser._id });
+
+      res.json('password changed');
+    } catch (e) {
+      next(e);
+    }
+  }
+
 };

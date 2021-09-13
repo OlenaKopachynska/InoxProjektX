@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const { configs } = require('../configs');
-const { statusCodesEnum } = require('../entities');
+const { statusCodesEnum, actionTypesEnum } = require('../entities');
 const ErrorHandler = require('../errors/ErrorHandler');
 
 module.exports = {
@@ -23,5 +23,33 @@ module.exports = {
     } catch (e) {
       throw new ErrorHandler(statusCodesEnum.UNA, 'Invalid token');
     }
+  },
+  generateActionToken: (actionType) => {
+    let secretWord = '';
+
+    switch (actionType) {
+      case actionTypesEnum.FORGOT_PASSWORD:
+        secretWord = configs.FORGOT_PASS_TOKEN_SECRET;
+        break;
+      default:
+        throw new ErrorHandler(statusCodesEnum.SERVER_ERROR, 'Wrong actionType');
+    }
+
+    return jwt.sign({ actionType }, secretWord, { expiresIn: '7d' });
+  },
+
+  verifyActionToken: (actionType, token) => {
+    let secretWord = '';
+
+    switch (actionType) {
+      case actionTypesEnum.FORGOT_PASSWORD:
+        secretWord = configs.FORGOT_PASS_TOKEN_SECRET;
+        break;
+      default:
+        throw new ErrorHandler(500, 'Wrong actionType');
+    }
+
+    return jwt.verify(token, secretWord);
   }
+
 };

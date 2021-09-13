@@ -1,4 +1,5 @@
 module.exports = {
   OAUTH: 'oauth',
-  USER: 'user'
+  USER: 'user',
+  ACTION_TOKEN: 'actionToken'
 };

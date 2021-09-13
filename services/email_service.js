@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
     pass: EMAIL_SENDER_PASS
   }
 });
-const sendMail = async (userEmail, emailAction, userName) => {
+const sendMail = async (userEmail, emailAction, context = {}) => {
   const templateToSend = templatesInfo[emailAction];
 
   if (!templateToSend) {
@@ -30,7 +30,7 @@ const sendMail = async (userEmail, emailAction, userName) => {
 
   const { subject, templateName } = templateToSend;
 
-  const html = await templateParser.render(templateName, userName);
+  const html = await templateParser.render(templateName, context);
 
   return transporter.sendMail({
     from: 'No reply',

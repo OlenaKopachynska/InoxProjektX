@@ -23,11 +23,11 @@ module.exports = {
   getUserByDynamicParam: (paramName, searchIn = 'body', dbField = paramName) => async (req, res, next) => {
     try {
       const value = req[searchIn][paramName];
+
       const user = await User.findOne({ [dbField]: value });
 
       req.user = user;
 
-      console.log(user);
       next();
     } catch (e) {
       next(e);
