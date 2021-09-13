@@ -10,6 +10,8 @@ const { DB_URL, PORT } = require('./configs/configs');
 
 mongoose.connect(DB_URL);
 
+require('./utils/create_super_apmin_util');
+
 const staticPath = path.join(__dirname, 'static');
 
 const app = express();
