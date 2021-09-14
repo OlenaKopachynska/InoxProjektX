@@ -1,9 +1,12 @@
 const router = require('express').Router();
-
 const tripsController = require('../controllers/trip.controller');
-const { tripMiddleware } = require('../middlewares');
+const { tripMiddleware, fileMiddleware } = require('../middlewares');
 
-router.post('/', tripMiddleware.isRequestDataComplete, tripMiddleware.isCountryExist, tripsController.createTrip);
+router.post('/',
+  tripMiddleware.isRequestDataComplete,
+  fileMiddleware.checkTripImage,
+  tripMiddleware.isCountryExist,
+  tripsController.createTrip);
 
 router.get('/', tripsController.getAllTrips);
 

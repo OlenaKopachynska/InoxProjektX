@@ -1,13 +1,24 @@
 const { Trip } = require('../dataBase');
 const { statusCodesEnum } = require('../entities');
+const { s3Service } = require('../services');
 
 module.exports = {
 
   createTrip: async (req, res, next) => {
     try {
+      const { trip_image } = req.files;
+
       const { country, price } = req.body;
 
-      await Trip.create({ country, price });
+      const createdTrip = await Trip.create({ country, price });
+
+      if (trip_image) {
+        const { _id } = createdTrip;
+
+        const uploadFile = await s3Service.uploadImage(trip_image, 'trip_image', _id);
+
+        await Trip.findByIdAndUpdate(_id, { trip_image: uploadFile.Location }, { new: true });
+      }
 
       res.status(statusCodesEnum.CREATED).json('created');
     } catch (e) {

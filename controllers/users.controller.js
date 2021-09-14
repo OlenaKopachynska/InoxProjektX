@@ -1,17 +1,27 @@
 const { User, OAuth } = require('../dataBase');
 const { emailActionsEnum, statusCodesEnum } = require('../entities');
 const userUtil = require('../utils/user_util');
-const { emailService, passwordService } = require('../services');
+const { emailService, passwordService, s3Service } = require('../services');
 
 module.exports = {
 
   createUser: async (req, res, next) => {
     try {
+      const { avatar } = req.files;
+
       const { password } = req.body;
 
       const hashPassword = await passwordService.hash(password);
 
-      const createdUser = await User.create({ ...req.body, password: hashPassword });
+      let createdUser = await User.create({ ...req.body, password: hashPassword });
+
+      if (avatar) {
+        const { _id } = createdUser;
+
+        const uploadFile = await s3Service.uploadImage(avatar, 'user', _id);
+
+        createdUser = await User.findByIdAndUpdate(_id, { avatar: uploadFile.Location }, { new: true });
+      }
 
       await emailService.sendMail('alurchik29@gmail.com', emailActionsEnum.WELCOME);
 

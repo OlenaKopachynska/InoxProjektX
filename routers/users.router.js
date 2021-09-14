@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const usersController = require('../controllers/users.controller');
 
-const { authMiddleware, userMiddleware } = require('../middlewares');
+const { authMiddleware, fileMiddleware, userMiddleware } = require('../middlewares');
 
 router.post('/',
   userMiddleware.isRequestDataCorrect,
+  fileMiddleware.checkUserAvatar,
   userMiddleware.getUserByDynamicParam('email'),
   userMiddleware.isEmailExist,
   usersController.createUser);

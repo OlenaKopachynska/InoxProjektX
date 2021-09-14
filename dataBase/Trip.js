@@ -11,6 +11,9 @@ const tripSchema = new Schema({
   },
   price: {
     type: Number
+  },
+  trip_image: {
+    type: String
   }
 }, { timestamps: true });
 

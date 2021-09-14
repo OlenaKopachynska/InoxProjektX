@@ -14,6 +14,11 @@ module.exports = {
   SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL || 'test@icloud.com',
   SUPER_ADMIN_PASS: process.env.SUPER_ADMIN_PASS || 'testtest',
 
+  AWS_S3_NAME: process.env.AWS_S3_NAME,
+  AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,
+  AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY,
+  AWS_S3_REGION: process.env.AWS_S3_REGION,
+
   FRONTEND_URL: process.env.FRONTEND_URL || 'https://google.com',
 
 };

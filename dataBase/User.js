@@ -19,6 +19,9 @@ const userSchema = new Schema({
     required: true,
     // select: false
   },
+  avatar: {
+    type: String,
+  },
   role: {
     type: String,
     default: userRolesEnum.USER,

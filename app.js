@@ -1,6 +1,7 @@
 const express = require('express');
 const expressHbs = require('express-handlebars');
 const mongoose = require('mongoose');
+const expressFileUpload = require('express-fileupload');
 
 const path = require('path');
 
@@ -19,6 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(staticPath));
+app.use(expressFileUpload());
 
 app.set('view engine', '.hbs');
 app.engine('.hbs', expressHbs({ defaultLayout: false }));
