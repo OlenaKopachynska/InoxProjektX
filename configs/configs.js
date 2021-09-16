@@ -21,4 +21,6 @@ module.exports = {
 
   FRONTEND_URL: process.env.FRONTEND_URL || 'https://google.com',
 
+  ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN || 'http://localhost:4200;http://localhost:3000',
+
 };

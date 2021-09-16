@@ -5,8 +5,7 @@ const { constants } = require('../configs');
 
 const createUserValidator = Joi.object({
   name: Joi.string().alphanum().min(2).max(30)
-    .trim()
-    .required(),
+    .trim(),
   email: Joi.string().regex(constants.EMAIL_REGEXP).trim().required(),
 
   password: Joi.string().regex(constants.PASSWORD_REGEXP).trim().required(),

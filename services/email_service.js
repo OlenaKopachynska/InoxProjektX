@@ -5,8 +5,8 @@ const path = require('path');
 const templatesInfo = require('../email_templates');
 
 const ErrorHandler = require('../errors/ErrorHandler');
-const { statusCodesEnum } = require('../entities');
 const { EMAIL_SENDER_ADDRESS, EMAIL_SENDER_PASS } = require('../configs/configs');
+const { SERVER_ERROR } = require('../configs/error');
 
 const templateParser = new EmailTemplates({
   views: {
@@ -25,7 +25,11 @@ const sendMail = async (userEmail, emailAction, context = {}) => {
   const templateToSend = templatesInfo[emailAction];
 
   if (!templateToSend) {
-    throw new ErrorHandler(statusCodesEnum.SERVER_ERROR, 'Wrong template');
+    throw new ErrorHandler(
+      SERVER_ERROR.WRONG_TEMPLATE.status,
+      SERVER_ERROR.WRONG_TEMPLATE.customCode,
+      'Wrong template'
+    );
   }
 
   const { subject, templateName } = templateToSend;

@@ -1,5 +1,6 @@
 const ErrorHandler = require('../errors/ErrorHandler');
-const { constants: { MAX_AVATAR_SIZE, PHOTOS_MIMETYPES } } = require('../configs');
+const { constants: { MAX_TRIP_IMAGE_SIZE, MAX_AVATAR_SIZE, PHOTOS_MIMETYPES } } = require('../configs');
+const { BAD_REQUEST } = require('../configs/error');
 
 module.exports = {
   checkUserAvatar: (req, res, next) => {
@@ -14,11 +15,22 @@ module.exports = {
       const { name, size, mimetype } = avatar;
 
       if (!PHOTOS_MIMETYPES.includes(mimetype)) {
-        throw new ErrorHandler(400, `Wrong file format ${name}`);
+        throw new ErrorHandler(
+          BAD_REQUEST.WRONG_FILE_FORMAT.status,
+          BAD_REQUEST.WRONG_FILE_FORMAT.customCode,
+          name,
+          'Wrong file format'
+        );
       }
 
       if (size > MAX_AVATAR_SIZE) {
-        throw new ErrorHandler(400, `File ${name} is too big`);
+        throw new ErrorHandler(
+          BAD_REQUEST.FILE_IS_TOO_BIG.status,
+          BAD_REQUEST.FILE_IS_TOO_BIG.customCode,
+          size,
+          'File is too big'
+
+        );
       }
 
       next();
@@ -39,11 +51,21 @@ module.exports = {
       const { name, size, mimetype } = trip_image;
 
       if (!PHOTOS_MIMETYPES.includes(mimetype)) {
-        throw new ErrorHandler(400, `Wrong file format ${name}`);
+        throw new ErrorHandler(
+          BAD_REQUEST.WRONG_FILE_FORMAT.status,
+          BAD_REQUEST.WRONG_FILE_FORMAT.customCode,
+          name,
+          'Wrong file format'
+        );
       }
 
-      if (size > MAX_AVATAR_SIZE) {
-        throw new ErrorHandler(400, `File ${name} is too big`);
+      if (size > MAX_TRIP_IMAGE_SIZE) {
+        throw new ErrorHandler(
+          BAD_REQUEST.FILE_IS_TOO_BIG.status,
+          BAD_REQUEST.FILE_IS_TOO_BIG.customCode,
+          size,
+          'File is too big'
+        );
       }
 
       next();

@@ -1,9 +1,10 @@
 const { OAuth, Action_token } = require('../dataBase');
 const { constants } = require('../configs');
-const { statusCodesEnum, dataBaseTablesEnum } = require('../entities');
+const { dataBaseTablesEnum } = require('../entities');
 const ErrorHandler = require('../errors/ErrorHandler');
 const { jwtService } = require('../services');
 const { userValidator } = require('../validators');
+const { BAD_REQUEST, UNAUTHORIZED } = require('../configs/error');
 
 module.exports = {
   checkAccessToken: async (req, res, next) => {
@@ -11,7 +12,11 @@ module.exports = {
       const token = req.get(constants.AUTHORIZATION);
 
       if (!token) {
-        throw new ErrorHandler(statusCodesEnum.UNA, 'No token');
+        throw new ErrorHandler(
+          UNAUTHORIZED.NO_TOKEN.status,
+          UNAUTHORIZED.NO_TOKEN.customCode,
+          'No token'
+        );
       }
 
       await jwtService.verifyToken(token);
@@ -19,7 +24,11 @@ module.exports = {
       const tokenFromDB = await OAuth.findOne({ access_token: token }).populate(dataBaseTablesEnum.USER);
 
       if (!tokenFromDB) {
-        throw new ErrorHandler(statusCodesEnum.UNA, 'Invalid token');
+        throw new ErrorHandler(
+          UNAUTHORIZED.INVALID_TOKEN.status,
+          UNAUTHORIZED.INVALID_TOKEN.customCode,
+          'Invalid token'
+        );
       }
 
       req.currentUser = tokenFromDB.user;
@@ -35,7 +44,11 @@ module.exports = {
       const token = req.get(constants.AUTHORIZATION);
 
       if (!token) {
-        throw new ErrorHandler(statusCodesEnum.UNA, 'No token');
+        throw new ErrorHandler(
+          UNAUTHORIZED.NO_TOKEN.status,
+          UNAUTHORIZED.NO_TOKEN.customCode,
+          'No token'
+        );
       }
 
       await jwtService.verifyToken(token, 'refresh');
@@ -43,7 +56,11 @@ module.exports = {
       const tokenFromDB = await OAuth.findOne({ refresh_token: token }).populate(dataBaseTablesEnum.USER);
 
       if (!tokenFromDB) {
-        throw new ErrorHandler(statusCodesEnum.UNA, 'Invalid token');
+        throw new ErrorHandler(
+          UNAUTHORIZED.INVALID_TOKEN.status,
+          UNAUTHORIZED.INVALID_TOKEN.customCode,
+          'Invalid token'
+        );
       }
 
       req.currentUser = tokenFromDB.user;
@@ -59,7 +76,11 @@ module.exports = {
       const token = req.get(constants.AUTHORIZATION);
 
       if (!token) {
-        throw new ErrorHandler(statusCodesEnum.UNA, 'No token');
+        throw new ErrorHandler(
+          UNAUTHORIZED.NO_TOKEN.status,
+          UNAUTHORIZED.NO_TOKEN.customCode,
+          'No token'
+        );
       }
 
       await jwtService.verifyActionToken(actionType, token);
@@ -67,7 +88,11 @@ module.exports = {
       const tokenFromDB = await Action_token.findOne({ token });
 
       if (!tokenFromDB) {
-        throw new ErrorHandler(statusCodesEnum.UNA, 'Invalid token');
+        throw new ErrorHandler(
+          UNAUTHORIZED.INVALID_TOKEN.status,
+          UNAUTHORIZED.INVALID_TOKEN.customCode,
+          'Invalid token'
+        );
       }
 
       req.currentUser = tokenFromDB.user;
@@ -83,7 +108,11 @@ module.exports = {
       const { error, value } = userValidator.passwordValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(statusCodesEnum.BAD_REQUEST, error.details[0].message);
+        throw new ErrorHandler(
+          BAD_REQUEST.VALIDATION_EXCEPTION.status,
+          BAD_REQUEST.VALIDATION_EXCEPTION.customCode,
+          'Entered data is not valid'
+        );
       }
 
       req.body = value;

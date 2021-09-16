@@ -1,7 +1,7 @@
 const { User } = require('../dataBase');
-const { statusCodesEnum } = require('../entities');
 const ErrorHandler = require('../errors/ErrorHandler');
 const { userValidator } = require('../validators/index');
+const { BAD_REQUEST, NOT_FOUND, FORBIDDEN } = require('../configs/error');
 
 module.exports = {
 
@@ -10,7 +10,12 @@ module.exports = {
       const { error, value } = userValidator.createUserValidator.validate(req.body);
 
       if (error) {
-        throw new ErrorHandler(statusCodesEnum.BAD_REQUEST, error.details[0].message);
+        throw new ErrorHandler(
+          BAD_REQUEST.VALIDATION_EXCEPTION.status,
+          BAD_REQUEST.VALIDATION_EXCEPTION.customCode,
+          'Entered data is not valid',
+          value
+        );
       }
 
       req.body = value;
@@ -39,7 +44,12 @@ module.exports = {
       const userByEmail = req.user;
 
       if (userByEmail) {
-        throw new ErrorHandler(statusCodesEnum.BAD_REQUEST, 'Email does already exist');
+        throw new ErrorHandler(
+          BAD_REQUEST.EMAIL_EXIST.status,
+          BAD_REQUEST.EMAIL_EXIST.customCode,
+          'Email does already exist',
+          userByEmail
+        );
       }
 
       next();
@@ -55,7 +65,11 @@ module.exports = {
       const user = await User.findById(user_id).lean();
 
       if (!user) {
-        throw new ErrorHandler(statusCodesEnum.NOT_FOUND, 'User not found');
+        throw new ErrorHandler(
+          NOT_FOUND.USER_IS_NOT_FOUND.status,
+          NOT_FOUND.USER_IS_NOT_FOUND.customCode,
+          'User is not found'
+        );
       }
 
       req.user = user;
@@ -75,7 +89,11 @@ module.exports = {
       }
 
       if (!roleArr.includes(role)) {
-        throw new ErrorHandler(statusCodesEnum.FORBIDDEN, 'Forbidden');
+        throw new ErrorHandler(
+          FORBIDDEN.ACCESS_DENIED.status,
+          FORBIDDEN.ACCESS_DENIED.customCode,
+          'Role does not have access'
+        );
       }
       next();
     } catch (e) {

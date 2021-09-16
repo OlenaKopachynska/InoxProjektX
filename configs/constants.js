@@ -8,7 +8,8 @@ module.exports = {
 
   AUTHORIZATION: 'Authorization',
 
-  MAX_AVATAR_SIZE: 5 * 1024 * 1024,
+  MAX_AVATAR_SIZE: 2000 * 2000,
+  MAX_TRIP_IMAGE_SIZE: 2000 * 2000,
 
   PHOTOS_MIMETYPES: [
     'image/gif',
