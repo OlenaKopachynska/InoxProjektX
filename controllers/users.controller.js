@@ -7,20 +7,23 @@ module.exports = {
 
   createUser: async (req, res, next) => {
     try {
-      const { avatar } = req.files;
-
       const { password } = req.body;
 
       const hashPassword = await passwordService.hash(password);
 
       let createdUser = await User.create({ ...req.body, password: hashPassword });
 
-      if (avatar) {
+      if (req.files && req.files.avatar) {
+        const { avatar } = req.files;
+
         const { _id } = createdUser;
 
         const uploadFile = await s3Service.uploadImage(avatar, 'user', _id);
+        // console.log(uploadFile);
 
-        createdUser = await User.findByIdAndUpdate(_id, { avatar: uploadFile.Location }, { new: true });
+        createdUser = await User.findByIdAndUpdate(_id, { avatar: uploadFile.key }, { new: true });
+
+        // console.log(createdUser);
       }
 
       await emailService.sendMail('alurchik29@gmail.com', emailActionsEnum.WELCOME);
@@ -55,13 +58,30 @@ module.exports = {
     try {
       const { params: { user_id }, currentUser } = req;
 
-      await User.findByIdAndDelete(user_id);
+      await s3Service.deleteImage(currentUser.avatar);
 
       await emailService.sendMail('alurchik29@gmail.com', emailActionsEnum.GOODBYE);
 
       await OAuth.deleteMany({ user: currentUser });
 
+      await User.findByIdAndDelete(user_id);
+
       res.status(statusCodesEnum.NO_CONTENT).json('Deleted successfully');
+    } catch (e) {
+      next(e);
+    }
+  },
+  updateUser: async (req, res, next) => {
+    try {
+      const { user } = req;
+
+      const updatedUser = await User.findByIdAndUpdate(user, req.body);
+
+      const normalizedUser = userUtil.userNormalizator(updatedUser);
+
+      await OAuth.updateOne({ user });
+
+      res.status(statusCodesEnum.NO_CONTENT).json(normalizedUser);
     } catch (e) {
       next(e);
     }

@@ -16,4 +16,6 @@ router.get('/:user_id', userMiddleware.isUserByIdExist, usersController.getUserB
 
 router.delete('/:user_id', userMiddleware.isUserByIdExist, authMiddleware.checkAccessToken, usersController.deleteUser);
 
+router.put('/:user_id', userMiddleware.isUserByIdExist, usersController.updateUser);
+
 module.exports = router;

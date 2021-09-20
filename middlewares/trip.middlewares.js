@@ -14,7 +14,6 @@ module.exports = {
           BAD_REQUEST.VALIDATION_EXCEPTION.status,
           BAD_REQUEST.VALIDATION_EXCEPTION.customCode,
           'Entered data is not valid',
-          value
         );
       }
 
@@ -22,10 +21,12 @@ module.exports = {
 
       if (trip) {
         throw new ErrorHandler(
+
           BAD_REQUEST.TRIP_EXIST.status,
           BAD_REQUEST.TRIP_EXIST.customCode,
-          trip,
-          'Trip does already exists'
+          'Trip does already exists',
+          trip
+
         );
       }
 
@@ -64,7 +65,6 @@ module.exports = {
           BAD_REQUEST.VALIDATION_EXCEPTION.status,
           BAD_REQUEST.VALIDATION_EXCEPTION.customCode,
           'Entered data is not valid',
-          value
         );
       }
       req.body = value;

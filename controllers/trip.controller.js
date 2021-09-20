@@ -6,19 +6,16 @@ module.exports = {
 
   createTrip: async (req, res, next) => {
     try {
-      const { trip_image } = req.files;
-
       const { country, price } = req.body;
 
       const createdTrip = await Trip.create({ country, price });
 
-      if (trip_image) {
-        const { _id } = createdTrip;
+      const { _id } = createdTrip;
+      const { trip_image } = req.files;
 
-        const uploadFile = await s3Service.uploadImage(trip_image, 'trip_image', _id);
+      const uploadFile = await s3Service.uploadImage(trip_image, 'trip_image', _id);
 
-        await Trip.findByIdAndUpdate(_id, { trip_image: uploadFile.Location }, { new: true });
-      }
+      await Trip.findByIdAndUpdate(_id, { trip_image: uploadFile.key }, { new: true });
 
       res.status(statusCodesEnum.CREATED).json('created');
     } catch (e) {
@@ -47,7 +44,9 @@ module.exports = {
 
   deleteTripById: async (req, res, next) => {
     try {
-      const { trip_id } = req.params;
+      const { params: { trip_id }, trip } = req;
+
+      await s3Service.deleteImage(trip.trip_image);
 
       await Trip.findByIdAndDelete(trip_id);
 
@@ -55,5 +54,18 @@ module.exports = {
     } catch (e) {
       next(e);
     }
+  },
+
+  updateTrip: async (req, res, next) => {
+    try {
+      const { trip } = req;
+
+      await Trip.findByIdAndUpdate(trip, req.body);
+
+      res.json({ message: 'trip is updated' });
+    } catch (e) {
+      next(e);
+    }
   }
+
 };

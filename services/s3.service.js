@@ -28,7 +28,14 @@ module.exports = {
         ContentType: mimetype
       })
       .promise();
-  }
+  },
+  deleteImage: (image_s3_key) => bucket
+    .deleteObject({
+      Bucket: AWS_S3_NAME,
+      Key: image_s3_key,
+    })
+    .promise()
+
 };
 
 function _fileNameBuilder(fileName, itemType, itemId) {

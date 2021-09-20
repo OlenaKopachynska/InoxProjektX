@@ -5,6 +5,9 @@ const userNormalizator = (userToNormalize) => {
     'createdAt',
     'updatedAt'
   ];
+
+  userToNormalize = userToNormalize.toObject();
+
   fieldToRemove.forEach((filed) => {
     delete userToNormalize[filed];
   });

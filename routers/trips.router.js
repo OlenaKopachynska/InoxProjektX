@@ -14,4 +14,6 @@ router.get('/:trip_id', tripMiddleware.isTripByIdExist, tripsController.getTripB
 
 router.delete('/:trip_id', tripMiddleware.isTripByIdExist, tripsController.deleteTripById);
 
+router.put('/:trip_id', tripMiddleware.isTripByIdExist, tripsController.updateTrip);
+
 module.exports = router;

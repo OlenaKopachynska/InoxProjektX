@@ -5,14 +5,11 @@ const { BAD_REQUEST } = require('../configs/error');
 module.exports = {
   checkUserAvatar: (req, res, next) => {
     try {
-      const { avatar } = req.files;
-
-      if (!avatar) {
+      if (!req.files || !req.files.avatar) {
         next();
         return;
       }
-
-      const { name, size, mimetype } = avatar;
+      const { name, size, mimetype } = req.files.avatar;
 
       if (!PHOTOS_MIMETYPES.includes(mimetype)) {
         throw new ErrorHandler(
@@ -41,9 +38,10 @@ module.exports = {
 
   checkTripImage: (req, res, next) => {
     try {
+      // console.log(req.files, 'tyty');
       const { trip_image } = req.files;
-
-      if (!trip_image) {
+      // console.log(trip_image, 'tyty');
+      if (!req.files || !req.files.trip_image) {
         next();
         return;
       }
